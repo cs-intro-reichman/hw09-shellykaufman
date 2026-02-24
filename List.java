@@ -75,6 +75,7 @@ public class List {
             if(current.cp.equals(chr)){
                 return index;
             }
+            current = current.next;
             index++;
         }
         return -1;
@@ -107,12 +108,18 @@ public class List {
         if(indexOf(chr) == -1){
             return false;
         }
+        if(indexOf(chr) == 0){
+            this.first = this.first.next;
+            size--;
+            return true;
+        }
         int index = indexOf(chr);
         Node current = this.first;
-        for(int i = 0; i < index; i++){
+        for(int i = 0; i < index - 1; i++){
             current = current.next;
         }
         current.next = current.next.next;
+        size--;
         return true;
     }
 
@@ -155,5 +162,44 @@ public class List {
         }
         // Returns an iterator that starts in that element
 	    return new ListIterator(current);
+    }
+
+
+
+
+    public static void main(String[] args) {
+        List myList = new List();
+        myList.addFirst('e');
+        myList.addFirst('t');
+        myList.addFirst('i');
+        myList.addFirst('m');
+        myList.addFirst('o');
+        myList.addFirst('c');
+        System.out.println( myList.toString()); //(c, o, m, i, t, e) if works
+
+        List committeeList = new List();
+        String testStr = "committee_";
+        for (int i = 0; i < testStr.length(); i++) {
+            committeeList.update(testStr.charAt(i));
+        }
+        // לפי הקובץ: (('c', 1, 0, 0) ('o', 1, 0, 0) ('m', 2, 0, 0) ('i', 1, 0, 0) ('t', 2, 0, 0) ('e', 2, 0, 0) ('_', 1, 0, 0))
+        System.out.println("List after 'committee_': " + committeeList.toString());
+
+        System.out.println("Index of 'm' " + committeeList.indexOf('m')); // 2
+        System.out.println("Index of 'z' " + committeeList.indexOf('z')); // -1
+
+
+        try {
+            System.out.println("CharData at index 2: " + committeeList.get(2)); // אמור להיות 'm'
+            System.out.println("CharData at index 10: " + committeeList.get(10)); // אמור לזרוק חריגה
+        } catch (IndexOutOfBoundsException e) {
+            System.out.println("Caught expected exception for index 10");
+        }
+
+        boolean removed = committeeList.remove('m');
+        System.out.println("Removed 'm'? " + removed);
+        System.out.println("List after removing 'm': " + committeeList.toString());
+        System.out.println("Index of 'm' now  " + committeeList.indexOf('m')); // -1
+
     }
 }
